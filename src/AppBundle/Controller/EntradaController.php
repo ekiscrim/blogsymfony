@@ -22,6 +22,9 @@ class EntradaController extends Controller
      * @Route("/entradas/crear", name="crear entrada")
      */
     public function crearEntrada(){
+
+
+
         return $this->render('crearEntrada.html.twig');
     }
 }
