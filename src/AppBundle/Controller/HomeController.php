@@ -16,6 +16,7 @@ class HomeController extends Controller
     {
         //$response = new Response('Hola guapo',Response::HTTP_OK,array('content-type' => 'text/html'));
         //return $response;
+
         return $this->render('home.html.twig');
     }
 }

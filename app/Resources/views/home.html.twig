@@ -1,8 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block content %}
 Inicio
-
-<a href="">Nueva</a>
-<a href="#">Editar</a>
-<a href="">Borrar</a>
-<br>
-<a href="">Login</a>
-<a href="">Registro</a>
+<body>
+    <a href="">Nueva</a>
+    <a href="#">Editar</a>
+    <a href="">Borrar</a>
+    <br>
+    {% if app.user %}
+        <p>{{ app.user }}</p>
+    {% else %}
+        <a href="">Login</a>
+        <a href="">Registro</a>
+    {% endif %}
+</body>
+{% endblock %}
