@@ -16,12 +16,15 @@ class EntradaController extends Controller
     {
         //$response = new Response('Hola guapo',Response::HTTP_OK,array('content-type' => 'text/html'));
         //return $response;
-        return $this->render('entradas.html.twig');
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
+        $entradas = $repository->findAll();
+        return $this->render('entradas.html.twig',array('entradas'=>$entradas,));
     }
     /**
      * @Route("/entradas/crear", name="crear entrada")
      */
     public function crearEntrada(){
+        
         return $this->render('crearEntrada.html.twig');
     }
 }
