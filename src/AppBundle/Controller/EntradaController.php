@@ -71,4 +71,12 @@ class EntradaController extends Controller
         }
 
     }
+    /**
+     * @Route("/entradas/editar/{id}", name="editar_entrada")
+     */
+    public function editarEntrada($id, Request $request)
+    {
+        //mirar http://stackoverflow.com/questions/32211232/edit-form-in-symfony2
+        echo "editar";
+    }
 }
