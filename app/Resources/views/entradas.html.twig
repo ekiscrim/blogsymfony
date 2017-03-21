@@ -1,1 +1,11 @@
-lista de entradas
+{% extends 'base.html.twig' %}
+{% block content %}
+    <h3>Últimas entradas</h3>
+    {% for entrada in entradas %}
+        <h2>{{ entrada.title }}</h2>
+        <p>{{ entrada.contenido }}</p>
+        <small>{{ entrada.fecha|date('d-m-Y') }}</small>
+        <small>Autor: {{ entrada.autor }}</small>
+        <small>Slug: {{ entrada.slug }}</small>
+    {% endfor %}
+{% endblock %}
