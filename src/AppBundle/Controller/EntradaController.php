@@ -22,7 +22,7 @@ class EntradaController extends Controller
         //$response = new Response('Hola guapo',Response::HTTP_OK,array('content-type' => 'text/html'));
         //return $response;
         $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
-        $entradas = $repository->findAll();
+        $entradas = $repository->findBy([],['fecha' =>'DESC']);
         return $this->render('entradas.html.twig',array('entradas'=>$entradas,));
     }
     /**
@@ -47,16 +47,20 @@ class EntradaController extends Controller
 
             if ($form->isSubmitted() && $form->isValid()) {
                 // $form->getData() holds the submitted values
-                // but, the original `$task` variable has also been updated
-                $task = $form->getData();
+                $entradas = $form->getData();
 
                 // ... perform some action, such as saving the task to the database
                 // for example, if Task is a Doctrine entity, save it!
-                // $em = $this->getDoctrine()->getManager();
-                // $em->persist($task);
-                // $em->flush();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entradas);
+                $em->flush();
 
-                return $this->redirectToRoute('task_success');
+                $this->addFlash(
+                    'notice',
+                    'Entrada insertada!'
+                );
+
+                return $this->redirectToRoute('entradas');
             }
 
             return $this->render('crearEntrada.html.twig', array(
