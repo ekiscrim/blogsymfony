@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Entradas;
+use AppBundle\Form\EntradaFormType;
 use FOS\UserBundle\FOSUserBundle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,8 +50,6 @@ class EntradaController extends Controller
                 // $form->getData() holds the submitted values
                 $entradas = $form->getData();
 
-                // ... perform some action, such as saving the task to the database
-                // for example, if Task is a Doctrine entity, save it!
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($entradas);
                 $em->flush();
@@ -72,11 +71,43 @@ class EntradaController extends Controller
 
     }
     /**
-     * @Route("/entradas/editar/{id}", name="editar_entrada")
+     * @Route("/entradas/{id}/editar", name="editar_entrada")
      */
     public function editarEntrada($id, Request $request)
     {
-        //mirar http://stackoverflow.com/questions/32211232/edit-form-in-symfony2
-        echo "editar";
+        $em = $this->getDoctrine()->getEntityManager();
+        $entity = $em->getRepository('AppBundle:Entradas')->find($id);
+
+        if(!$entity || $this->getUser()->getUserName() != $entity->getAutor()){
+            //throw $this->denyAccessUnlessGranted("No eres el autor original");
+            return $this->redirectToRoute('entradas');
+
+        }else{
+
+            $form = $this->createFormBuilder($entity)
+                ->add('title', TextType::class)
+                ->add('fecha', DateType::class)
+                ->add('contenido', TextType::class)
+                ->add('slug', TextType::class)
+                ->add('autor', TextType::class)
+                ->add('save', SubmitType::class, array('label' => 'Editar entrada'))
+                ->getForm();
+
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid()){
+
+                $em->persist($entity);
+                $em->flush();
+
+                $this->addFlash('success','Entrada editada');
+
+                return $this->redirectToRoute('entradas');
+            }
+
+            return $this->render('editarEntrada.html.twig', array(
+                'entradaForm' => $form->createView()
+            ));
+        }
     }
 }
