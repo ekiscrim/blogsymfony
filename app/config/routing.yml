@@ -1,6 +1,9 @@
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
+admin:
+    path: /admin/entradas/pagina/{currentPage}
+    defaults: {_controller: AppBundle:BackOffice:index, currentPage:1}
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
