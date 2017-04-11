@@ -3,15 +3,17 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Entradas;
-use AppBundle\Form\EntradaFormType;
 use FOS\UserBundle\FOSUserBundle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 class EntradaController extends Controller
 {
@@ -20,18 +22,33 @@ class EntradaController extends Controller
      */
     public function indexAction(Request $request)
     {
-        //$response = new Response('Hola guapo',Response::HTTP_OK,array('content-type' => 'text/html'));
-        //return $response;
         $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
-        $entradas = $repository->findBy([],['fecha' =>'DESC']);
-        return $this->render('entradas.html.twig',array('entradas'=>$entradas,));
+        $entradas = $repository->findBy([], ['fecha' => 'DESC']);
+        return $this->render('entradas.html.twig', array('entradas' => $entradas,));
     }
+
+    /**
+     * @Route("/entrada/{slug}", name="entradas")
+     */
+    public function entrada(Request $request, $slug)
+    {
+        if ($slug != null) {
+            $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
+            $entrada = $repository->findOneBy(array('slug' => $slug));
+            return $this->render('entrada.html.twig', array('entrada' => $entrada));
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+
+    }
+
     /**
      * @Route("/entradas/crear", name="crear_entrada")
      */
-    public function crearEntrada(Request $request){
+    public function crearEntrada(Request $request)
+    {
         //comprobar que esta logueado
-        if($this->isGranted('ROLE_SUPER_ADMIN')){
+        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
             $entradas = new Entradas();
             $entradas->setAutor($this->getUser()->getUserName());
 
@@ -65,24 +82,26 @@ class EntradaController extends Controller
             return $this->render('crearEntrada.html.twig', array(
                 'form' => $form->createView(),
             ));
-        }else{
+        } else {
             return $this->redirectToRoute('homepage');
         }
 
     }
+
     /**
-     * @Route("/entradas/{id}/editar", name="editar_entrada")
+     * @Route("admin/entradas/{id}/editar", name="editar_entrada")
      */
+
     public function editarEntrada($id, Request $request)
     {
         $em = $this->getDoctrine()->getEntityManager();
         $entity = $em->getRepository('AppBundle:Entradas')->find($id);
-
-        if(!$entity || $this->getUser()->getUserName() != $entity->getAutor()){
+        //$this->getUser()->getUserName() != $entity->getAutor())
+        if (!$entity || !$this->isGranted('ROLE_SUPER_ADMIN')) {
             //throw $this->denyAccessUnlessGranted("No eres el autor original");
             return $this->redirectToRoute('entradas');
 
-        }else{
+        } else {
 
             $form = $this->createFormBuilder($entity)
                 ->add('title', TextType::class)
@@ -95,12 +114,12 @@ class EntradaController extends Controller
 
             $form->handleRequest($request);
 
-            if($form->isSubmitted() && $form->isValid()){
+            if ($form->isSubmitted() && $form->isValid()) {
 
                 $em->persist($entity);
                 $em->flush();
 
-                $this->addFlash('success','Entrada editada');
+                $this->addFlash('success', 'Entrada editada');
 
                 return $this->redirectToRoute('entradas');
             }
@@ -108,6 +127,27 @@ class EntradaController extends Controller
             return $this->render('editarEntrada.html.twig', array(
                 'entradaForm' => $form->createView()
             ));
+        }
+    }
+    /**
+     * @Method({"POST", "DELETE"})
+     */
+    public function deleteAction(Request $request)
+    {
+        if ($this->isGranted('ROLE_SUPER_ADMIN'))
+        {
+            $id = $request->request->get("id");
+
+            $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
+            $entrada = $repository->find($id);
+
+            if ($request->getMethod() == 'POST') {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($entrada);
+                $em->flush();
+            } else {
+                return $this->redirectToRoute('homepage');
+            }
         }
     }
 }

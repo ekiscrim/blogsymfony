@@ -16,27 +16,6 @@ class HomeController extends Controller
      */
     public function indexAction(Request $request)
     {
-        //$response = new Response('Hola guapo',Response::HTTP_OK,array('content-type' => 'text/html'));
-        //return $response;
-        /*$userName = $this->getUser()->getUserName();
-        $entrada = new Entradas();
-        $entrada->setTitle('Hola mundo');
-        $entrada->setFecha(new \DateTime('now'));
-        $entrada->setContenido('Hola mundo contenido');
-        $entrada->setSlug('hola-mundo');
-        $entrada->setAutor($userName);
-
-        $em = $this->getDoctrine()->getManager();
-
-        // tells Doctrine you want to (eventually) save the Product (no queries yet)
-        $em->persist($entrada);
-
-        // actually executes the queries (i.e. the INSERT query)
-        $em->flush();
-
-
-        return new Response('Saved new product with id '.$entrada->getId());*/
-
         $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
         $entradas = $repository->findAll();
 

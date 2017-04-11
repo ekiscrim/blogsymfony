@@ -7,6 +7,7 @@
         <th>Fecha</th>
         <th>Autor</th>
         <th>Slug</th>
+        <th>Acciones</th>
         {% for entrada in entradas %}
             <tr>
                 <td><p><small>{{ entrada.title }}</small></p></td>
@@ -14,6 +15,7 @@
                 <td><p><small>{{ entrada.fecha|date('d-m-Y') }}</small></p></td>
                 <td><p><small>{{ entrada.autor }}</small></p></td>
                 <td><p><small>Slug: {{ entrada.slug }}</small></p></td>
+                <td><a href="{{ path('editar_entrada', {'id': entrada.id}) }}" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a> <a href="" id="{{ entrada.id }}"class="btn btn-danger borrar"><span class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
         {% endfor %}
     </table>

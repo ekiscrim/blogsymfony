@@ -5,6 +5,15 @@ admin:
     path: /admin/entradas/pagina/{currentPage}
     defaults: {_controller: AppBundle:BackOffice:index, currentPage:1}
 
+entrada:
+    path: /entrada/{slug}
+    defaults: {_controller: AppBundle:Entrada:index, slug:/}
+
+delete_entrada:
+    path: /delete
+    defaults: {_controller: AppBundle:Entrada:delete}
+
+
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
