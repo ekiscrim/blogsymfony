@@ -28,7 +28,7 @@ class EntradaController extends Controller
     }
 
     /**
-     * @Route("/entrada/{slug}", name="entradas")
+     * @Route("/entrada/{slug}", name="ver_entrada")
      */
     public function entrada(Request $request, $slug)
     {
@@ -48,7 +48,8 @@ class EntradaController extends Controller
     public function crearEntrada(Request $request)
     {
         //comprobar que esta logueado
-        if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->isGranted('ROLE_SUPER_ADMIN'))
+        {
             $entradas = new Entradas();
             $entradas->setAutor($this->getUser()->getUserName());
 

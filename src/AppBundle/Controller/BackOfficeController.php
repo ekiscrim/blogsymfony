@@ -21,7 +21,7 @@ class BackOfficeController extends Controller
     {
         if($this->isGranted('ROLE_SUPER_ADMIN'))
         {
-            $limit = 2;
+            $limit = 10;
             $repository = $this->getDoctrine()->getRepository('AppBundle:Entradas');
             $entradas = $repository->getEntradas($currentPage,$limit);
             $totalEntradasReturned = $entradas->getIterator()->count();

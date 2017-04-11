@@ -25,7 +25,7 @@ class EntradasRepository extends EntityRepository
 
         return $paginator;
     }
-    public function paginate($dql,$page=1,$limit=3)
+    public function paginate($dql,$page=1,$limit=10)
     {
         $paginator = new Paginator($dql);
         $paginator->setUseOutputWalkers(false);
